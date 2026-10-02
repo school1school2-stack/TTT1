@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <style>
         :root {
-            --bg: #f8fafc; --card-bg: #ffffff; --accent: #0284c7;
+            --bg: #f8fafc; --card-bg: #ffffff; --accent: #059669;
             --text-main: #1e293b; --text-sub: #64748b; --border: #e2e8f0;
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -28,7 +28,7 @@
         .student-item:hover { background: #e0f2fe; color: #0369a1; font-weight: bold; }
 
         /* بطاقة عرض النتيجة الفورية */
-        .score-card { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2); }
+        .score-card { background: linear-gradient(135deg, #059669, #047857); color: white; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2); }
         .score-card h2 { margin: 0; font-size: 1.8rem; }
         .score-card p { margin: 5px 0 0 0; font-size: 0.95rem; opacity: 0.9; }
 
@@ -41,10 +41,10 @@
         /* أزرار خيارات الطالب ونموذج الإجابة (أ، ب، ج، د) */
         .options-group { display: flex; justify-content: center; gap: 3px; }
         .opt-btn { background: #f1f5f9; border: 1px solid var(--border); border-radius: 4px; padding: 3px 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; color: #334155; }
-        .opt-btn.active { background: #0284c7; color: white; border-color: #0284c7; }
+        .opt-btn.active { background: #059669; color: white; border-color: #059669; }
         
         /* أزرار نموذج الإجابة المعتمد بلون مميز */
-        .model-btn.active { background: #0369a1 !important; color: white !important; border-color: #0369a1 !important; }
+        .model-btn.active { background: #047857 !important; color: white !important; border-color: #047857 !important; }
 
         /* لوحة التغذية الراجعة */
         .diff-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 8px; max-height: 250px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
@@ -59,11 +59,8 @@
         .clear-btn { background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
         .clear-btn:hover { background: #dc2626; }
 
-        .save-model-btn { background: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
-        .save-model-btn:hover { background: #0369a1; }
-
-        .submit-btn { width: 100%; background: #10b981; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; }
-        .submit-btn:hover { background: #059669; }
+        .submit-btn { width: 100%; background: #059669; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .submit-btn:hover { background: #047857; }
         .footer-note { text-align: center; font-size: 0.75rem; color: var(--text-sub); margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px; }
     </style>
 </head>
@@ -71,25 +68,24 @@
 
 <div class="scanner-container">
     <h1>📷 أداة التصحيح والتغذية الراجعة المفصلة</h1>
-    <p class="subtitle">ثانوية الأمير عبدالمجيد - استدعاء النماذج من السحابة</p>
+    <p class="subtitle">ثانوية الأمير عبدالمجيد - النماذج الثلاثة (أ، ب، ج)</p>
 
-    <!-- 1. اختيار اسم الطالب في المقدمة -->
+    <!-- 1. اختيار النموذج المعتمد (أ، ب، ج) -->
+    <div class="form-group" style="background: #ecfdf5; padding: 15px; border-radius: 12px; border: 1px solid #a7f3d0;">
+        <label style="color: #065f46; font-size: 1rem; margin-bottom: 8px;">1️⃣ اختر نموذج الاختبار للرصد:</label>
+        <select id="modelSelector" onchange="switchModel(this.value)" style="border-color: #059669; font-weight: bold; color: #065f46;">
+            <option value="modelA">النموذج الأول (نموذج أ)</option>
+            <option value="modelB">النموذج الثاني (نموذج ب)</option>
+            <option value="modelC">النموذج الثالث (نموذج ج)</option>
+        </select>
+    </div>
+
+    <!-- 2. اختيار اسم الطالب في المقدمة -->
     <div class="form-group" style="background: #e0f2fe; padding: 15px; border-radius: 12px; border: 1px solid #bae6fd;">
-        <label style="color: #0369a1; font-size: 1rem; margin-bottom: 8px;">1️⃣ ابحث عن اسم الطالب واختاره أولاً:</label>
+        <label style="color: #0369a1; font-size: 1rem; margin-bottom: 8px;">2️⃣ ابحث عن اسم الطالب واختاره أولاً:</label>
         <div class="student-select-box">
             <input type="text" id="studentSearchInput" class="student-search-input" placeholder="اكتب اسم الطالب للبحث..." oninput="filterStudents()" onclick="showDropdown()">
             <div id="studentDropdownList" class="student-dropdown-list"></div>
-        </div>
-    </div>
-
-    <!-- 2. نافذة اختيار واستدعاء النموذج المعتمد من السحابة -->
-    <div class="form-group" style="background: #f0fdf4; padding: 15px; border-radius: 12px; border: 1px solid #bbf7d0;">
-        <label style="color: #166534; font-size: 1rem; margin-bottom: 8px;">2️⃣ استدعاء أو اختيار النموذج المعتمد من السحابة:</label>
-        <div style="display: flex; gap: 8px;">
-            <select id="cloudModelSelect" onchange="loadModelFromCloud()" style="flex: 1;">
-                <option value="">-- اختر نموذجاً محفوظاً --</option>
-            </select>
-            <button type="button" class="ai-btn" onclick="fetchCloudModelsList()">تحديث القائمة</button>
         </div>
     </div>
 
@@ -112,20 +108,10 @@
         <div class="grid-20" id="studentAnswersContainer"></div>
     </div>
 
-    <!-- 5. مفاتيح الإجابة النموذجية المعتمدة (تفاعل أ، ب، ج، د وحفظ بالسحابة) -->
-    <div class="section-box" style="border-color: #0284c7; background: #f0f9ff;">
-        <label style="color: #0369a1; margin-bottom: 8px;">5️⃣ مفاتيح النموذج المعتمد (ثابتة لجميع الطلاب حتى تغييرها):</label>
+    <!-- 5. مفاتيح الإجابة النموذجية المعتمدة للنموذج المختار -->
+    <div class="section-box" style="border-color: #059669; background: #ecfdf5;">
+        <label style="color: #065f46; margin-bottom: 8px;">5️⃣ مفاتيح النموذج المعتمد الثابتة:</label>
         <div class="grid-20" id="modelKeyContainer"></div>
-        
-        <div style="margin-top: 15px; display: flex; gap: 8px; align-items: center;">
-            <input type="text" id="newModelNameInput" placeholder="اسم النموذج للحفظ (نموذج أ، نموذج ب، نموذج ج)..." value="نموذج أ" style="flex: 1; padding: 10px; border: 1px solid #0284c7; border-radius: 8px; font-size: 0.9rem; background: #fff;">
-            <button type="button" class="save-model-btn" onclick="saveModelToCloud()">حفظ النموذج في السحابة</button>
-        </div>
-    </div>
-
-    <div class="form-group" style="display: none;">
-        <label>اسم النموذج الفعلي المرسل:</label>
-        <input type="text" id="customModelName" value="نموذج أ">
     </div>
 
     <!-- بطاقة عرض النتيجة الفورية -->
@@ -162,46 +148,102 @@
 
     let allStudents = [];
     let studentAnswersState = {};
-    let activeModelKeys = {}; // تخزين المفاتيح المعتمدة للأسئلة
+    let currentModelKey = 'modelA';
 
-    // بنك الأسئلة المدمج والدقيق المطابق للنماذج (أ، ب، ج) المرفقة[cite: 8, 9, 10, 11]
-    const modelQuestionsJson = [
-        { q: "1. الجملة أو الأداة الأولى في الاختبار:", answerOptions: [{answerText: "أ", isCorrect: true}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "2. علامة جزم الفعل المضارع معتل الآخر:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: true}, {answerText: "د", isCorrect: false}] },
-        { q: "3. إعراب كلمة (مجتهدٌ):", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: true}, {answerText: "د", isCorrect: false}] },
-        { q: "4. الجملة المبنية للمجهول بشكل صحيح:", answerOptions: [{answerText: "أ", isCorrect: true}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "5. الفعل المضارع في جملة (اجتهد كي تنجحَ):", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: true}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "6. الأداة التي تجزم الفعل المضارع:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: true}, {answerText: "د", isCorrect: false}] },
-        { q: "7. نائب الفاعل مرفوع وعلامة رفعه:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: true}, {answerText: "د", isCorrect: false}] },
-        { q: "8. إعراب خبر كان وأخواتها:", answerOptions: [{answerText: "أ", isCorrect: true}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "9. الفعل المضارع من الأفعال الخمسة:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: true}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "10. تأثير الأداة (لن) على الفعل المضارع:", answerOptions: [{answerText: "أ", isCorrect: true}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "11. الفاعل في الجملة:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: true}, {answerText: "د", isCorrect: false}] },
-        { q: "12. بناء الفعل للمجهول:", answerOptions: [{answerText: "أ", isCorrect: true}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "13. عمل (إن وأخواتها):", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: true}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "14. الفعل المضارع المجزوم بالسكون الصحيح:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: true}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "15. الفعل المجزوم بحذف حرف العلة:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: true}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "16. الضبط الصحيح بعد النواسخ:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: true}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] },
-        { q: "17. الفعل المضارع المرفوع بالضمة الظاهرة:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: true}, {answerText: "د", isCorrect: false}] },
-        { q: "18. الجملة المبنية للمعلوم:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: true}, {answerText: "د", isCorrect: false}] },
-        { q: "19. الأفعال الخمسة المرفوعة بثبوت النون:", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: false}, {answerText: "ج", isCorrect: true}, {answerText: "د", isCorrect: false}] },
-        { q: "20. عمل (كان وأخواتها):", answerOptions: [{answerText: "أ", isCorrect: false}, {answerText: "ب", isCorrect: true}, {answerText: "ج", isCorrect: false}, {answerText: "د", isCorrect: false}] }
-    ];
+    // تعريف مصفوفات الأسئلة للنماذج الثلاثة المستخرجة بدقة من الملفات المرفقة[cite: 8, 9, 10]
+    const modelsData = {
+        modelA: {
+            name: "نموذج أ",
+            questions: [
+                { q: "1. أي الأداة التالية تجزم الفعل المضارع؟", ans: "A" },
+                { q: "2. جملة \"كان الطالبُ نشيطاً\"، كلمة \"نشيطاً\" تعرب:", ans: "B" },
+                { q: "3. الجملة المبنية للمجهول بشكل صحيح هي:", ans: "B" },
+                { q: "4. علامة جزم الفعل المضارع معتل الآخر بـ (لم) هي:", ans: "C" },
+                { q: "5. إعراب كلمة \"مجتهدٌ\" في جملة \"الطالبُ مجتهدٌ\":", ans: "B" },
+                { q: "6. الفعل المضارع \"ينجحَ\" في جملة \"اجتهدْ كي تنجحَ\" هو:", ans: "A" },
+                { q: "7. الفاعل في جملة \"قرأَ الطالبُ الكتابَ\" هو:", ans: "C" },
+                { q: "8. نائب الفاعل في جملة \"كُوفِئَ المتفوقُ\" مرفوع وعلامة رفعه:", ans: "A" },
+                { q: "9. الأداة \"لن\" تؤثر في الفعل المضارع بـ:", ans: "C" },
+                { q: "10. الجملة المشتملة على حرف ناسخ هي:", ans: "C" },
+                { q: "11. عند بناء الفعل \"كَتَبَ\" للمجهول يطابق الضبط فيصبح:", ans: "A" },
+                { q: "12. الفعل المضارع \"يهملوا\" في جملة \"لم يهملوا\":", ans: "A" },
+                { q: "13. الفعل المضارع المجزوم بـ (لم) بالسكون الصحيح هو:", ans: "A" },
+                { q: "14. \"إنَّ وأخواتها\" عند دخولها على الجملة الاسمية فإنها:", ans: "B" },
+                { q: "15. الضبط الصحيح لكلمة (الجو) في \"إنَّ الجوَّ جميلٌ\":", ans: "C" },
+                { q: "16. الفعل \"يدعو\" في جملة \"لم يدعُ المسلمُ إلا اللهَ\" مجزوم وعلامة جزمه:", ans: "A" },
+                { q: "17. الجملة المبنية للمعلوم فيما يلي هي:", ans: "B" },
+                { q: "18. الفعل المضارع المرفوع بالضمة الظاهرة فيما يلي:", ans: "C" },
+                { q: "19. \"كان وأخواتها\" عند دخولها على الجملة الاسمية فإنها:", ans: "B" },
+                { q: "20. من الأفعال الخمسة المرفوعة بثبوت النون:", ans: "B" }
+            ]
+        },
+        modelB: {
+            name: "نموذج ب",
+            questions: [
+                { q: "1. علامة جزم الفعل المضارع معتل الآخر بـ (لم) هي:", ans: "C" },
+                { q: "2. الجملة المبنية للمجهول بشكل صحيح هي:", ans: "A" },
+                { q: "3. الفعل المضارع \"ينجحَ\" في جملة \"اجتهدْ كي تنجحَ\" هو:", ans: "B" },
+                { q: "4. الجملة المشتملة على حرف ناسخ هي:", ans: "C" },
+                { q: "5. نائب الفاعل في جملة \"كُوفِئَ المتفوقُ\" مرفوع وعلامة رفعه:", ans: "B" },
+                { q: "6. إعراب كلمة \"مجتهدٌ\" في جملة \"الطالبُ مجتهدٌ\":", ans: "A" },
+                { q: "7. أي الأداة التالية تجزم الفعل المضارع؟", ans: "D" },
+                { q: "8. الفعل المضارع \"يهملوا\" في جملة \"لم يهملوا\":", ans: "A" },
+                { q: "9. الأداة \"لن\" تؤثر في الفعل المضارع بـ:", ans: "B" },
+                { q: "10. عند بناء الفعل \"كَتَبَ\" للمجهول يطابق الضبط فيصبح:", ans: "A" },
+                { q: "11. جملة \"كان الطالبُ نشيطاً\"، كلمة \"نشيطاً\" تعرب:", ans: "C" },
+                { q: "12. الفاعل في جملة \"قرأَ الطالبُ الكتابَ\" هو:", ans: "B" },
+                { q: "13. الضبط الصحيح لكلمة (الجو) في \"إنَّ الجوَّ جميلٌ\":", ans: "B" },
+                { q: "14. الفعل المضارع المرفوع بالضمة الظاهرة فيما يلي:", ans: "C" },
+                { q: "15. \"إنَّ وأخواتها\" عند دخولها على الجملة الاسمية فإنها:", ans: "A" },
+                { q: "16. الفعل \"يدعو\" في جملة \"لم يدعُ المسلمُ إلا اللهَ\" مجزوم وعلامة جزمه:", ans: "B" },
+                { q: "17. من الأفعال الخمسة المرفوعة بثبوت النون:", ans: "A" },
+                { q: "18. الفعل المضارع المجزوم بـ (لم) بالسكون الصحيح هو:", ans: "B" },
+                { q: "19. الجملة المبنية للمعلوم فيما يلي هي:", ans: "C" },
+                { q: "20. \"كان وأخواتها\" عند دخولها على الجملة الاسمية فإنها:", ans: "B" }
+            ]
+        },
+        modelC: {
+            name: "نموذج ج",
+            questions: [
+                { q: "1. الجملة المشتملة على حرف ناسخ هي:", ans: "B" },
+                { q: "2. علامة جزم الفعل المضارع معتل الآخر بـ (لم) هي:", ans: "A" },
+                { q: "3. إعراب كلمة \"مجتهدٌ\" في جملة \"الطالبُ مجتهدٌ\":", ans: "C" },
+                { q: "4. الجملة المبنية للمجهول بشكل صحيح هي:", ans: "A" },
+                { q: "5. الفعل المضارع \"ينجحَ\" في جملة \"اجتهدْ كي تنجحَ\" هو:", ans: "B" },
+                { q: "6. أي الأداة التالية تجزم الفعل المضارع؟", ans: "C" },
+                { q: "7. نائب الفاعل في جملة \"كُوفِئَ المتفوقُ\" مرفوع وعلامة رفعه:", ans: "C" },
+                { q: "8. جملة \"كان الطالبُ نشيطاً\"، كلمة \"نشيطاً\" تعرب:", ans: "A" },
+                { q: "9. الفعل المضارع \"يهملوا\" في جملة \"لم يهملوا\":", ans: "B" },
+                { q: "10. الأداة \"لن\" تؤثر في الفعل المضارع بـ:", ans: "A" },
+                { q: "11. الفاعل في جملة \"قرأَ الطالبُ الكتابَ\" هو:", ans: "C" },
+                { q: "12. عند بناء الفعل \"كَتَبَ\" للمجهول يطابق الضبط فيصبح:", ans: "B" },
+                { q: "13. \"إنَّ وأخواتها\" عند دخولها على الجملة الاسمية فإنها:", ans: "A" },
+                { q: "14. الفعل المضارع المجزوم بـ (لم) بالسكون الصحيح هو:", ans: "B" },
+                { q: "15. الفعل \"يدعو\" في جملة \"لم يدعُ المسلمُ إلا اللهَ\" مجزوم وعلامة جزمه:", ans: "B" },
+                { q: "16. الضبط الصحيح لكلمة (الجو) في \"إنَّ الجوَّ جميلٌ\":", ans: "B" },
+                { q: "17. الفعل المضارع المرفوع بالضمة الظاهرة فيما يلي:", ans: "B" },
+                { q: "18. الجملة المبنية للمعلوم فيما يلي هي:", ans: "C" },
+                { q: "19. من الأفعال الخمسة المرفوعة بثبوت النون:", ans: "C" },
+                { q: "20. \"كان وأخواتها\" عند دخولها على الجملة الاسمية فإنها:", ans: "B" }
+            ]
+        }
+    };
 
     window.onload = function() {
         for (let i = 1; i <= 20; i++) {
             studentAnswersState[i] = 'A';
-            let qData = modelQuestionsJson[i-1];
-            let correctIndex = qData.answerOptions.findIndex(opt => opt.isCorrect);
-            let mapIdxToKey = ['A', 'B', 'C', 'D'];
-            activeModelKeys[i] = mapIdxToKey[correctIndex] || 'A';
         }
         buildStudentAnswersGrid();
         buildModelKeyGrid();
         loadAllowedStudents();
-        fetchCloudModelsList();
         updateComparison();
     };
+
+    function switchModel(modelKey) {
+        currentModelKey = modelKey;
+        buildModelKeyGrid();
+        updateComparison();
+    }
 
     function buildStudentAnswersGrid() {
         const container = document.getElementById('studentAnswersContainer');
@@ -233,44 +275,24 @@
         container.innerHTML = '';
         const keys = ['A', 'B', 'C', 'D'];
         const labels = {'A':'أ', 'B':'ب', 'C':'ج', 'D':'د'};
+        const currentQuestions = modelsData[currentModelKey].questions;
 
         for (let i = 1; i <= 20; i++) {
-            let currentVal = activeModelKeys[i];
+            let correctVal = currentQuestions[i-1].ans;
             let optHtml = '';
             keys.forEach(k => {
-                let activeClass = (currentVal === k) ? 'opt-btn model-btn active' : 'opt-btn model-btn';
-                optHtml += `<button type="button" class="${activeClass}" onclick="setModelKey(${i}, '${k}')">${labels[k]}</button>`;
+                let activeClass = (correctVal === k) ? 'opt-btn model-btn active' : 'opt-btn model-btn';
+                optHtml += `<button type="button" class="${activeClass}" disabled>${labels[k]}</button>`;
             });
 
             container.innerHTML += `
-                <div class="ans-card" style="background:#f0f9ff;">
+                <div class="ans-card" style="background:#ecfdf5;">
                     <span>س ${i}</span>
-                    <div class="options-group" id="model_opts_${i}">
+                    <div class="options-group">
                         ${optHtml}
                     </div>
                 </div>
             `;
-        }
-    }
-
-    function setModelKey(qNum, ansKey) {
-        activeModelKeys[qNum] = ansKey;
-        updateModelKeyButtonUI(qNum, ansKey);
-        updateComparison();
-    }
-
-    function updateModelKeyButtonUI(qNum, ansKey) {
-        const container = document.getElementById(`model_opts_${qNum}`);
-        if (!container) return;
-        const buttons = container.getElementsByTagName('button');
-        const keys = ['A', 'B', 'C', 'D'];
-        
-        for(let j=0; j<buttons.length; j++) {
-            if(keys[j] === ansKey) {
-                buttons[j].className = 'opt-btn model-btn active';
-            } else {
-                buttons[j].className = 'opt-btn model-btn';
-            }
         }
     }
 
@@ -324,80 +346,17 @@
         updateComparison();
     }
 
-    // حفظ النموذج المعتمد في السحابة تحت أي اسم (مثل: نموذج أ، نموذج ب، نموذج ج)
-    async function saveModelToCloud() {
-        const modelName = document.getElementById('newModelNameInput').value.trim();
-        if(!modelName) {
-            alert('الرجاء كتابة اسم النموذج أولاً.');
-            return;
-        }
-
-        try {
-            await db.collection("approved_models").doc(modelName).set({
-                model_name: modelName,
-                keys: activeModelKeys,
-                updated_at: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            document.getElementById('customModelName').value = modelName;
-            alert(`✅ تم حفظ مفاتيح (${modelName}) في السحابة بنجاح!`);
-            fetchCloudModelsList();
-        } catch (error) {
-            alert("حدث خطأ أثناء حفظ النموذج في السحابة.");
-        }
-    }
-
-    // جلب قائمة النماذج المحفوظة من السحابة وتعبئة القائمة المنسدلة
-    function fetchCloudModelsList() {
-        const select = document.getElementById('cloudModelSelect');
-        db.collection("approved_models").get().then((snapshot) => {
-            select.innerHTML = '<option value="">-- اختر نموذجاً محفوظاً من السحابة --</option>';
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                if(data.model_name) {
-                    let opt = document.createElement('option');
-                    opt.value = data.model_name;
-                    opt.textContent = data.model_name;
-                    select.appendChild(opt);
-                }
-            });
-        });
-    }
-
-    // استدعاء النموذج المحدد من السحابة وتعبئة أزراره تلقائياً
-    async function loadModelFromCloud() {
-        const modelName = document.getElementById('cloudModelSelect').value;
-        if(!modelName) return;
-
-        try {
-            const docRef = await db.collection("approved_models").doc(modelName).get();
-            if(docRef.exists) {
-                const data = docRef.data();
-                activeModelKeys = data.keys || {};
-                document.getElementById('newModelNameInput').value = modelName;
-                document.getElementById('customModelName').value = modelName;
-                
-                buildModelKeyGrid();
-                updateComparison();
-                alert(`✅ تم استدعاء (${modelName}) من السحابة بنجاح وجاهز للتصحيح!`);
-            } else {
-                alert("النموذج غير موجود في السحابة.");
-            }
-        } catch (error) {
-            alert("حدث خطأ أثناء استدعاء النموذج.");
-        }
-    }
-
     function updateComparison() {
         const diffContainer = document.getElementById('diffGridContainer');
         diffContainer.innerHTML = '';
 
         let score = 0;
+        const currentQuestions = modelsData[currentModelKey].questions;
 
         for (let i = 1; i <= 20; i++) {
             const studentVal = studentAnswersState[i];
-            const qData = modelQuestionsJson[i-1];
-            const correctVal = activeModelKeys[i] || 'A';
+            const qData = currentQuestions[i-1];
+            const correctVal = qData.ans;
             const isMatch = (studentVal === correctVal);
 
             if (isMatch) score++;
@@ -471,7 +430,7 @@
 
     async function processAndSendToDashboard() {
         const studentName = document.getElementById('studentSearchInput').value.trim();
-        const customModelName = document.getElementById('customModelName').value.trim() || "نموذج أ";
+        const customModelName = modelsData[currentModelKey].name;
 
         if (!studentName) {
             alert('الرجاء اختيار اسم الطالب من القائمة أولاً.');
@@ -480,11 +439,12 @@
 
         let answersDetails = [];
         let score = 0;
+        const currentQuestions = modelsData[currentModelKey].questions;
         
         for (let i = 1; i <= 20; i++) {
             let studentAnsKey = studentAnswersState[i]; 
-            let qData = modelQuestionsJson[i-1];
-            let correctAnsKey = activeModelKeys[i] || 'A'; 
+            let qData = currentQuestions[i-1];
+            let correctAnsKey = qData.ans; 
             let isCorrect = (studentAnsKey === correctAnsKey);
             if (isCorrect) score++;
 
@@ -514,7 +474,6 @@
             await db.collection("alkfaeat_results").add(recordData);
             alert(`✅ تم اعتماد درجة الطالب (${studentName}) بنجاح تحت اسم (${customModelName})!\nالدرجة النهائية: ${score} من 20 (${p}%) وتم إرسال التغذية الراجعة لوحة التحكم.`);
             
-            // تصفير اسم الطالب وخانة اللصق فقط دون المساس بمفاتيح النموذج المعتمد
             clearQuickPaste();
             document.getElementById('studentSearchInput').value = '';
         } catch (error) {
